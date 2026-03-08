@@ -15,7 +15,8 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: 'Share Tech Mono', monospace; min-height: 100vh; padding: 24px 16px; background-image: radial-gradient(ellipse at 20% 20%, rgba(100,60,200,0.07) 0%, transparent 60%), radial-gradient(ellipse at 80% 80%, rgba(0,180,100,0.05) 0%, transparent 60%); }
   h1 { font-family: 'Press Start 2P', monospace; font-size: 13px; color: var(--gold); text-align: center; letter-spacing: 2px; margin-bottom: 4px; text-shadow: 0 0 20px rgba(255,215,0,0.5); }
-  .subtitle { text-align: center; font-size: 11px; color: var(--text-dim); margin-bottom: 28px; letter-spacing: 1px; }
+  .subtitle { text-align: center; font-size: 11px; color: var(--text-dim); margin-bottom: 4px; letter-spacing: 1px; }
+  .save-indicator { text-align: center; font-size: 10px; color: var(--green); margin-bottom: 20px; letter-spacing: 1px; }
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; max-width: 680px; margin: 0 auto; }
   .card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 18px; position: relative; overflow: hidden; }
   .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
@@ -61,6 +62,7 @@
   .stat-val { font-size: 16px; font-weight: bold; color: var(--gold); }
   .stat-lbl { font-size: 9px; color: var(--text-dim); margin-top: 3px; }
   .level-badge { font-family: 'Press Start 2P', monospace; font-size: 9px; background: linear-gradient(135deg, #1a1a2e, #2a1a4e); border: 1px solid var(--purple); border-radius: 6px; padding: 10px 14px; text-align: center; color: var(--purple); margin-top: 10px; letter-spacing: 1px; box-shadow: 0 0 20px rgba(170,100,255,0.15); }
+  .btn-reset { background: rgba(255,60,60,0.1); border: 1px solid var(--red); color: var(--red); font-family: 'Press Start 2P', monospace; font-size: 7px; padding: 8px; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 10px; letter-spacing: 1px; }
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--green); color: #000; font-family: 'Press Start 2P', monospace; font-size: 9px; padding: 12px 20px; border-radius: 6px; transition: transform 0.4s cubic-bezier(.4,0,.2,1); z-index: 999; white-space: nowrap; }
   .toast.show { transform: translateX(-50%) translateY(0); }
   @media (max-width: 480px) { .grid { grid-template-columns: 1fr; } .card.full { grid-column: 1; } }
@@ -69,6 +71,8 @@
 <body>
 <h1>⚔ LIFE RPG</h1>
 <p class="subtitle">— TRACKER FINANCIER —</p>
+<p class="save-indicator" id="save-indicator">💾 Sauvegarde automatique active</p>
+
 <div class="grid">
   <div class="card gold">
     <div class="card-title"><span class="card-icon">🔒</span> COFFRE-FORT</div>
@@ -117,82 +121,134 @@
   </div>
   <div class="card full gold">
     <div class="card-title"><span class="card-icon">📜</span> JOURNAL D'AVENTURE</div>
-    <ul class="log-list" id="log-list">
-      <li><span>⚔ Nouvelle partie démarrée</span><span class="log-plus">0 ₱</span><span class="log-date">Aujourd'hui</span></li>
-    </ul>
+    <ul class="log-list" id="log-list"></ul>
+    <button class="btn-reset" onclick="resetAll()">⚠ RÉINITIALISER TOUTES LES DONNÉES</button>
   </div>
 </div>
+
 <div class="toast" id="toast"></div>
+
 <script>
-  const state = {
-    coffre:  { val: 0, goal: 20000, bar: 'coffre-bar',  pct: 'coffre-pct',  amount: 'coffre-amount' },
-    urgence: { val: 0, goal: 8250,  bar: 'urgence-bar', pct: 'urgence-pct', amount: 'urgence-amount' },
-    vie:     { val: 0, goal: 2750,  bar: 'vie-bar',     pct: 'vie-pct',     amount: 'vie-amount' },
-    plaisir: { val: 0, goal: 750,   bar: 'plaisir-bar', pct: 'plaisir-pct', amount: 'plaisir-amount' },
-  };
+  const GOALS = { coffre: 20000, urgence: 8250, vie: 2750, plaisir: 750 };
+  const LABELS = { coffre: '🔒 Coffre-fort', urgence: '🛡️ Fonds urgence', vie: '🏠 Vie courante', plaisir: '🎯 Plaisir' };
+
+  // Charger depuis localStorage
+  let state = { coffre: 0, urgence: 0, vie: 0, plaisir: 0 };
+  let logs = [];
+
+  function loadData() {
+    try {
+      const saved = localStorage.getItem('liferpg_state');
+      const savedLogs = localStorage.getItem('liferpg_logs');
+      if (saved) state = JSON.parse(saved);
+      if (savedLogs) logs = JSON.parse(savedLogs);
+    } catch(e) {}
+  }
+
+  function saveData() {
+    try {
+      localStorage.setItem('liferpg_state', JSON.stringify(state));
+      localStorage.setItem('liferpg_logs', JSON.stringify(logs.slice(0, 50)));
+      // Flash indicator
+      const ind = document.getElementById('save-indicator');
+      ind.textContent = '💾 Sauvegardé !';
+      ind.style.color = '#ffd700';
+      setTimeout(() => {
+        ind.textContent = '💾 Sauvegarde automatique active';
+        ind.style.color = '';
+      }, 1000);
+    } catch(e) {}
+  }
+
   function fmt(n) { return Math.round(n).toLocaleString('fr-FR'); }
-  function updateUI() {
-    for (const [key, s] of Object.entries(state)) {
-      const pct = Math.min(100, (s.val / s.goal) * 100);
-      document.getElementById(s.bar).style.width = pct + '%';
-      document.getElementById(s.pct).textContent = Math.round(pct) + '%';
-      document.getElementById(s.amount).textContent = fmt(s.val);
+
+  function renderLogs() {
+    const list = document.getElementById('log-list');
+    list.innerHTML = '';
+    if (logs.length === 0) {
+      list.innerHTML = '<li><span>⚔ Nouvelle partie démarrée</span><span class="log-plus">0 ₱</span><span class="log-date">Aujourd\'hui</span></li>';
+      return;
     }
-    const totalEpargne = state.coffre.val + state.urgence.val;
+    logs.forEach(log => {
+      const li = document.createElement('li');
+      li.innerHTML = `<span>${log.msg}</span><span class="${log.plus ? 'log-plus' : 'log-minus'}">${log.plus ? '+' : '-'}${fmt(log.amount)} ₱</span><span class="log-date">${log.date}</span>`;
+      list.appendChild(li);
+    });
+  }
+
+  function updateUI() {
+    for (const key of Object.keys(state)) {
+      const pct = Math.min(100, (state[key] / GOALS[key]) * 100);
+      document.getElementById(key + '-bar').style.width = pct + '%';
+      document.getElementById(key + '-pct').textContent = Math.round(pct) + '%';
+      document.getElementById(key + '-amount').textContent = fmt(state[key]);
+    }
+    const totalEpargne = state.coffre + state.urgence;
     document.getElementById('stat-total').textContent = fmt(totalEpargne) + ' ₱';
-    const bossRemain = Math.max(0, state.urgence.goal - state.urgence.val);
-    const bossPct = Math.round((bossRemain / state.urgence.goal) * 100);
-    document.getElementById('stat-boss').textContent = bossPct + '%';
+    const bossRemain = Math.max(0, GOALS.urgence - state.urgence);
+    document.getElementById('stat-boss').textContent = Math.round((bossRemain / GOALS.urgence) * 100) + '%';
     const moisRestants = bossRemain > 0 ? Math.ceil(bossRemain / 3000) : 0;
     document.getElementById('stat-mois').textContent = moisRestants > 0 ? '~' + moisRestants : '✅';
     const badge = document.getElementById('level-badge');
-    const u = state.urgence.val;
-    if (u >= state.urgence.goal && state.coffre.val >= 5000) {
+    if (state.urgence >= GOALS.urgence && state.coffre >= 5000) {
       badge.textContent = '⚔ NV.3 — EN CROISSANCE';
-    } else if (u >= state.urgence.goal) {
+      badge.style.color = '#44aaff'; badge.style.borderColor = '#44aaff';
+    } else if (state.urgence >= GOALS.urgence) {
       badge.textContent = '🛡️ NV.2 — PROTÉGÉ — BOSS VAINCU ✅';
-      badge.style.color = '#00ff88';
-      badge.style.borderColor = '#00ff88';
+      badge.style.color = '#00ff88'; badge.style.borderColor = '#00ff88';
     } else {
       badge.textContent = '⚔ NV.1 — SURVIVANT';
-      badge.style.color = '';
-      badge.style.borderColor = '';
+      badge.style.color = ''; badge.style.borderColor = '';
     }
   }
+
   function showToast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg;
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2500);
   }
-  function addLog(msg, amount, isPlus) {
-    const li = document.createElement('li');
-    const now = new Date();
-    const date = now.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' });
-    li.innerHTML = `<span>${msg}</span><span class="${isPlus ? 'log-plus' : 'log-minus'}">${isPlus ? '+' : '-'}${fmt(amount)} ₱</span><span class="log-date">${date}</span>`;
-    document.getElementById('log-list').prepend(li);
-  }
+
   function addTo(key) {
     const input = document.getElementById(key + '-input');
     const val = parseFloat(input.value);
     if (!val || val <= 0) { showToast('MONTANT INVALIDE !'); return; }
-    state[key].val += val;
+    state[key] += val;
     input.value = '';
-    const labels = { coffre: '🔒 Coffre-fort', urgence: '🛡️ Fonds urgence', vie: '🏠 Vie courante', plaisir: '🎯 Plaisir' };
+    const now = new Date();
+    const date = now.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' });
     const isPlus = key === 'coffre' || key === 'urgence';
-    addLog(labels[key], val, isPlus);
+    logs.unshift({ msg: LABELS[key], amount: val, plus: isPlus, date });
+    renderLogs();
     updateUI();
-    if (key === 'urgence' && state.urgence.val >= state.urgence.goal) {
+    saveData();
+    if (key === 'urgence' && state.urgence >= GOALS.urgence) {
       showToast('🏆 BOSS VAINCU ! NV.2 DÉBLOQUÉ !');
     } else {
-      showToast('+' + fmt(val) + ' ₱ ENREGISTRÉ');
+      showToast((isPlus ? '+' : '-') + fmt(val) + ' ₱ SAUVEGARDÉ ✅');
     }
   }
+
+  function resetAll() {
+    if (!confirm('Réinitialiser toutes les données ? Cette action est irréversible.')) return;
+    state = { coffre: 0, urgence: 0, vie: 0, plaisir: 0 };
+    logs = [];
+    localStorage.removeItem('liferpg_state');
+    localStorage.removeItem('liferpg_logs');
+    renderLogs();
+    updateUI();
+    showToast('🔄 DONNÉES RÉINITIALISÉES');
+  }
+
   document.querySelectorAll('input').forEach(inp => {
     inp.addEventListener('keydown', e => {
       if (e.key === 'Enter') { addTo(inp.id.replace('-input', '')); }
     });
   });
+
+  // Init
+  loadData();
+  renderLogs();
   updateUI();
 </script>
 </body>
