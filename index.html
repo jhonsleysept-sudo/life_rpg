@@ -9,197 +9,169 @@
   :root {
     --bg: #0a0a0f; --panel: #12121a; --border: #2a2a3a;
     --gold: #ffd700; --gold-dim: #a08800; --green: #00ff88;
-    --green-dim: #005533; --red: #ff4455; --blue: #44aaff;
-    --purple: #aa66ff; --text: #e0e0f0; --text-dim: #606080;
+    --green-dim: #005533; --red: #ff4455; --text: #e0e0f0; --text-dim: #606080;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: 'Share Tech Mono', monospace; min-height: 100vh; padding: 24px 16px; background-image: radial-gradient(ellipse at 20% 20%, rgba(100,60,200,0.07) 0%, transparent 60%), radial-gradient(ellipse at 80% 80%, rgba(0,180,100,0.05) 0%, transparent 60%); }
   h1 { font-family: 'Press Start 2P', monospace; font-size: 13px; color: var(--gold); text-align: center; letter-spacing: 2px; margin-bottom: 4px; text-shadow: 0 0 20px rgba(255,215,0,0.5); }
-  .subtitle { text-align: center; font-size: 11px; color: var(--text-dim); margin-bottom: 4px; letter-spacing: 1px; }
-  .save-indicator { text-align: center; font-size: 10px; color: var(--green); margin-bottom: 20px; letter-spacing: 1px; }
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; max-width: 680px; margin: 0 auto; }
-  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 18px; position: relative; overflow: hidden; }
+  .subtitle { text-align: center; font-size: 11px; color: var(--text-dim); margin-bottom: 28px; letter-spacing: 1px; }
+  .grid { display: grid; grid-template-columns: 1fr; gap: 14px; max-width: 480px; margin: 0 auto; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 20px; position: relative; overflow: hidden; }
   .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
   .card.gold::before { background: linear-gradient(90deg, transparent, var(--gold), transparent); }
   .card.green::before { background: linear-gradient(90deg, transparent, var(--green), transparent); }
-  .card.blue::before { background: linear-gradient(90deg, transparent, var(--blue), transparent); }
-  .card.purple::before { background: linear-gradient(90deg, transparent, var(--purple), transparent); }
-  .card-title { font-family: 'Press Start 2P', monospace; font-size: 8px; color: var(--text-dim); letter-spacing: 1px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
-  .card-icon { font-size: 14px; }
-  .amount-display { font-size: 22px; font-weight: bold; margin-bottom: 6px; letter-spacing: 1px; }
+  .card-title { font-family: 'Press Start 2P', monospace; font-size: 9px; color: var(--text-dim); letter-spacing: 1px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .card-icon { font-size: 16px; }
+  .amount-display { font-size: 32px; font-weight: bold; margin-bottom: 4px; letter-spacing: 1px; }
   .card.gold .amount-display { color: var(--gold); }
   .card.green .amount-display { color: var(--green); }
-  .card.blue .amount-display { color: var(--blue); }
-  .card.purple .amount-display { color: var(--purple); }
   .amount-label { font-size: 10px; color: var(--text-dim); margin-bottom: 14px; }
-  .xp-bar-wrap { background: rgba(255,255,255,0.05); border-radius: 4px; height: 10px; overflow: hidden; margin-bottom: 6px; border: 1px solid var(--border); }
+  .xp-bar-wrap { background: rgba(255,255,255,0.05); border-radius: 4px; height: 12px; overflow: hidden; margin-bottom: 6px; border: 1px solid var(--border); }
   .xp-bar { height: 100%; border-radius: 4px; transition: width 1s cubic-bezier(.4,0,.2,1); position: relative; overflow: hidden; }
   .xp-bar::after { content: ''; position: absolute; top: 0; left: -100%; right: 0; bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: shimmer 2s infinite; }
   @keyframes shimmer { to { left: 200%; } }
   .card.gold .xp-bar { background: linear-gradient(90deg, var(--gold-dim), var(--gold)); }
   .card.green .xp-bar { background: linear-gradient(90deg, var(--green-dim), var(--green)); }
-  .card.blue .xp-bar { background: linear-gradient(90deg, #1144aa, var(--blue)); }
-  .card.purple .xp-bar { background: linear-gradient(90deg, #441188, var(--purple)); }
-  .xp-text { font-size: 10px; color: var(--text-dim); display: flex; justify-content: space-between; }
-  input[type="number"] { background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-family: 'Share Tech Mono', monospace; font-size: 14px; padding: 8px 10px; width: 100%; margin-top: 10px; outline: none; transition: border-color 0.2s; }
+  .xp-text { font-size: 10px; color: var(--text-dim); display: flex; justify-content: space-between; margin-bottom: 14px; }
+  .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+  input[type="number"] { background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-family: 'Share Tech Mono', monospace; font-size: 16px; padding: 10px 12px; width: 100%; margin-top: 10px; outline: none; transition: border-color 0.2s; }
   input[type="number"]:focus { border-color: var(--gold); }
-  .btn { font-family: 'Press Start 2P', monospace; font-size: 8px; padding: 10px 14px; border: none; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 8px; letter-spacing: 1px; transition: opacity 0.2s, transform 0.1s; }
+  .btn { font-family: 'Press Start 2P', monospace; font-size: 7px; padding: 12px 8px; border: none; border-radius: 4px; cursor: pointer; letter-spacing: 1px; transition: opacity 0.2s, transform 0.1s; }
   .btn:active { transform: scale(0.97); }
-  .btn:hover { opacity: 0.85; }
-  .card.gold .btn { background: var(--gold); color: #000; }
-  .card.green .btn { background: var(--green); color: #000; }
-  .card.blue .btn { background: var(--blue); color: #000; }
-  .card.purple .btn { background: var(--purple); color: #fff; }
-  .card.full { grid-column: 1 / -1; }
-  .log-list { list-style: none; max-height: 140px; overflow-y: auto; margin-top: 10px; }
-  .log-list li { font-size: 11px; padding: 5px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; gap: 8px; }
+  .btn.plus { background: var(--green); color: #000; }
+  .btn.minus { background: #2a2a3a; color: var(--red); border: 1px solid var(--red); }
+  .level-badge { font-family: 'Press Start 2P', monospace; font-size: 9px; background: linear-gradient(135deg, #1a1a2e, #2a1a4e); border: 1px solid #aa66ff; border-radius: 6px; padding: 14px; text-align: center; color: #aa66ff; letter-spacing: 1px; box-shadow: 0 0 20px rgba(170,100,255,0.15); }
+  .log-list { list-style: none; max-height: 160px; overflow-y: auto; margin-top: 10px; }
+  .log-list li { font-size: 11px; padding: 6px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; gap: 8px; }
   .log-list li:last-child { border-bottom: none; }
   .log-date { color: var(--text-dim); font-size: 10px; flex-shrink: 0; }
   .log-plus { color: var(--green); }
   .log-minus { color: var(--red); }
-  .stats-row { display: flex; gap: 10px; margin-top: 10px; }
-  .stat-box { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 6px; padding: 10px; text-align: center; }
-  .stat-val { font-size: 16px; font-weight: bold; color: var(--gold); }
-  .stat-lbl { font-size: 9px; color: var(--text-dim); margin-top: 3px; }
-  .level-badge { font-family: 'Press Start 2P', monospace; font-size: 9px; background: linear-gradient(135deg, #1a1a2e, #2a1a4e); border: 1px solid var(--purple); border-radius: 6px; padding: 10px 14px; text-align: center; color: var(--purple); margin-top: 10px; letter-spacing: 1px; box-shadow: 0 0 20px rgba(170,100,255,0.15); }
-  .btn-reset { background: rgba(255,60,60,0.1); border: 1px solid var(--red); color: var(--red); font-family: 'Press Start 2P', monospace; font-size: 7px; padding: 8px; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 10px; letter-spacing: 1px; }
+  .save-indicator { text-align: center; font-size: 9px; color: var(--text-dim); margin-top: 8px; }
+  .save-indicator.saved { color: var(--green); }
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--green); color: #000; font-family: 'Press Start 2P', monospace; font-size: 9px; padding: 12px 20px; border-radius: 6px; transition: transform 0.4s cubic-bezier(.4,0,.2,1); z-index: 999; white-space: nowrap; }
   .toast.show { transform: translateX(-50%) translateY(0); }
-  @media (max-width: 480px) { .grid { grid-template-columns: 1fr; } .card.full { grid-column: 1; } }
 </style>
 </head>
 <body>
 <h1>⚔ LIFE RPG</h1>
 <p class="subtitle">— TRACKER FINANCIER —</p>
-<p class="save-indicator" id="save-indicator">💾 Sauvegarde automatique active</p>
-
 <div class="grid">
+
   <div class="card gold">
     <div class="card-title"><span class="card-icon">🔒</span> COFFRE-FORT</div>
     <div class="amount-display" id="coffre-amount">0</div>
     <div class="amount-label">pesos — épargne long terme</div>
     <div class="xp-bar-wrap"><div class="xp-bar" id="coffre-bar" style="width:0%"></div></div>
-    <div class="xp-text"><span id="coffre-pct">0%</span><span>objectif: 20 000</span></div>
-    <input type="number" id="coffre-input" placeholder="+ ajouter des pesos...">
-    <button class="btn" onclick="addTo('coffre')">DÉPOSER XP</button>
+    <div class="xp-text"><span id="coffre-pct">0%</span><span>objectif: 20 000 ₱</span></div>
+    <input type="number" id="coffre-input" placeholder="montant...">
+    <div class="btn-row">
+      <button class="btn plus" onclick="addTo('coffre', 1)">+ DÉPOSER</button>
+      <button class="btn minus" onclick="addTo('coffre', -1)">− RETIRER</button>
+    </div>
   </div>
+
   <div class="card green">
     <div class="card-title"><span class="card-icon">🛡️</span> FONDS D'URGENCE</div>
     <div class="amount-display" id="urgence-amount">0</div>
     <div class="amount-label">pesos — bouclier anti-crise</div>
     <div class="xp-bar-wrap"><div class="xp-bar" id="urgence-bar" style="width:0%"></div></div>
-    <div class="xp-text"><span id="urgence-pct">0%</span><span>objectif: 8 250</span></div>
-    <input type="number" id="urgence-input" placeholder="+ ajouter des pesos...">
-    <button class="btn" onclick="addTo('urgence')">DÉPOSER XP</button>
-  </div>
-  <div class="card blue">
-    <div class="card-title"><span class="card-icon">🏠</span> VIE COURANTE</div>
-    <div class="amount-display" id="vie-amount">0</div>
-    <div class="amount-label">pesos dépensés ce mois</div>
-    <div class="xp-bar-wrap"><div class="xp-bar" id="vie-bar" style="width:0%"></div></div>
-    <div class="xp-text"><span id="vie-pct">0%</span><span>budget: 2 750/mois</span></div>
-    <input type="number" id="vie-input" placeholder="+ enregistrer une dépense...">
-    <button class="btn" onclick="addTo('vie')">DÉPENSER XP</button>
-  </div>
-  <div class="card purple">
-    <div class="card-title"><span class="card-icon">🎯</span> PLAISIR</div>
-    <div class="amount-display" id="plaisir-amount">0</div>
-    <div class="amount-label">pesos dépensés ce mois</div>
-    <div class="xp-bar-wrap"><div class="xp-bar" id="plaisir-bar" style="width:0%"></div></div>
-    <div class="xp-text"><span id="plaisir-pct">0%</span><span>budget: 750/mois</span></div>
-    <input type="number" id="plaisir-input" placeholder="+ enregistrer une dépense...">
-    <button class="btn" onclick="addTo('plaisir')">DÉPENSER XP</button>
-  </div>
-  <div class="card full blue">
-    <div class="card-title"><span class="card-icon">📊</span> STATS DU JOUEUR</div>
-    <div class="stats-row">
-      <div class="stat-box"><div class="stat-val" id="stat-total">0 ₱</div><div class="stat-lbl">TOTAL ÉPARGNÉ</div></div>
-      <div class="stat-box"><div class="stat-val" id="stat-boss">100%</div><div class="stat-lbl">BOSS HP RESTANT</div></div>
-      <div class="stat-box"><div class="stat-val" id="stat-mois">~3</div><div class="stat-lbl">BONS MOIS RESTANTS</div></div>
+    <div class="xp-text"><span id="urgence-pct">0%</span><span>objectif: 8 250 ₱</span></div>
+    <input type="number" id="urgence-input" placeholder="montant...">
+    <div class="btn-row">
+      <button class="btn plus" onclick="addTo('urgence', 1)">+ DÉPOSER</button>
+      <button class="btn minus" onclick="addTo('urgence', -1)">− RETIRER</button>
     </div>
-    <div class="level-badge" id="level-badge">⚔ NV.1 — SURVIVANT</div>
   </div>
-  <div class="card full gold">
-    <div class="card-title"><span class="card-icon">📜</span> JOURNAL D'AVENTURE</div>
-    <ul class="log-list" id="log-list"></ul>
-    <button class="btn-reset" onclick="resetAll()">⚠ RÉINITIALISER TOUTES LES DONNÉES</button>
-  </div>
-</div>
 
+  <div class="level-badge" id="level-badge">⚔ NV.1 — SURVIVANT</div>
+
+  <div class="card gold">
+    <div class="card-title"><span class="card-icon">📜</span> JOURNAL D'AVENTURE</div>
+    <ul class="log-list" id="log-list">
+      <li><span>⚔ Nouvelle partie démarrée</span><span class="log-plus">0 ₱</span><span class="log-date">Aujourd'hui</span></li>
+    </ul>
+  </div>
+
+</div>
+<div class="save-indicator" id="save-indicator">💾 données sauvegardées</div>
 <div class="toast" id="toast"></div>
 
 <script>
-  const GOALS = { coffre: 20000, urgence: 8250, vie: 2750, plaisir: 750 };
-  const LABELS = { coffre: '🔒 Coffre-fort', urgence: '🛡️ Fonds urgence', vie: '🏠 Vie courante', plaisir: '🎯 Plaisir' };
+  const STORAGE_KEY = 'liferpg_data';
 
-  // Charger depuis localStorage
-  let state = { coffre: 0, urgence: 0, vie: 0, plaisir: 0 };
-  let logs = [];
+  const state = {
+    coffre:  { val: 0, goal: 20000, bar: 'coffre-bar',  pct: 'coffre-pct',  amount: 'coffre-amount' },
+    urgence: { val: 0, goal: 8250,  bar: 'urgence-bar', pct: 'urgence-pct', amount: 'urgence-amount' },
+    log: []
+  };
 
-  function loadData() {
+  function save() {
     try {
-      const saved = localStorage.getItem('liferpg_state');
-      const savedLogs = localStorage.getItem('liferpg_logs');
-      if (saved) state = JSON.parse(saved);
-      if (savedLogs) logs = JSON.parse(savedLogs);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        coffre: state.coffre.val,
+        urgence: state.urgence.val,
+        log: state.log
+      }));
+      const ind = document.getElementById('save-indicator');
+      ind.textContent = '💾 sauvegardé ✅';
+      ind.classList.add('saved');
+      setTimeout(() => { ind.textContent = '💾 données sauvegardées'; ind.classList.remove('saved'); }, 2000);
     } catch(e) {}
   }
 
-  function saveData() {
+  function load() {
     try {
-      localStorage.setItem('liferpg_state', JSON.stringify(state));
-      localStorage.setItem('liferpg_logs', JSON.stringify(logs.slice(0, 50)));
-      // Flash indicator
-      const ind = document.getElementById('save-indicator');
-      ind.textContent = '💾 Sauvegardé !';
-      ind.style.color = '#ffd700';
-      setTimeout(() => {
-        ind.textContent = '💾 Sauvegarde automatique active';
-        ind.style.color = '';
-      }, 1000);
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      state.coffre.val = data.coffre || 0;
+      state.urgence.val = data.urgence || 0;
+      state.log = data.log || [];
+      renderLog();
     } catch(e) {}
   }
 
   function fmt(n) { return Math.round(n).toLocaleString('fr-FR'); }
 
-  function renderLogs() {
+  function updateUI() {
+    for (const key of ['coffre', 'urgence']) {
+      const s = state[key];
+      const pct = Math.min(100, (s.val / s.goal) * 100);
+      document.getElementById(s.bar).style.width = pct + '%';
+      document.getElementById(s.pct).textContent = Math.round(pct) + '%';
+      document.getElementById(s.amount).textContent = fmt(s.val);
+    }
+    const badge = document.getElementById('level-badge');
+    const u = state.urgence.val;
+    if (u >= state.urgence.goal && state.coffre.val >= 5000) {
+      badge.textContent = '⚔ NV.3 — EN CROISSANCE 🌱';
+      badge.style.color = '#ffd700';
+      badge.style.borderColor = '#ffd700';
+    } else if (u >= state.urgence.goal) {
+      badge.textContent = '🛡️ NV.2 — PROTÉGÉ — BOSS VAINCU ✅';
+      badge.style.color = '#00ff88';
+      badge.style.borderColor = '#00ff88';
+    } else {
+      badge.textContent = '⚔ NV.1 — SURVIVANT';
+      badge.style.color = '';
+      badge.style.borderColor = '';
+    }
+  }
+
+  function renderLog() {
     const list = document.getElementById('log-list');
     list.innerHTML = '';
-    if (logs.length === 0) {
+    const entries = [...state.log].reverse().slice(0, 20);
+    if (entries.length === 0) {
       list.innerHTML = '<li><span>⚔ Nouvelle partie démarrée</span><span class="log-plus">0 ₱</span><span class="log-date">Aujourd\'hui</span></li>';
       return;
     }
-    logs.forEach(log => {
+    entries.forEach(e => {
       const li = document.createElement('li');
-      li.innerHTML = `<span>${log.msg}</span><span class="${log.plus ? 'log-plus' : 'log-minus'}">${log.plus ? '+' : '-'}${fmt(log.amount)} ₱</span><span class="log-date">${log.date}</span>`;
+      li.innerHTML = `<span>${e.msg}</span><span class="${e.plus ? 'log-plus' : 'log-minus'}">${e.plus ? '+' : '-'}${fmt(e.amount)} ₱</span><span class="log-date">${e.date}</span>`;
       list.appendChild(li);
     });
-  }
-
-  function updateUI() {
-    for (const key of Object.keys(state)) {
-      const pct = Math.min(100, (state[key] / GOALS[key]) * 100);
-      document.getElementById(key + '-bar').style.width = pct + '%';
-      document.getElementById(key + '-pct').textContent = Math.round(pct) + '%';
-      document.getElementById(key + '-amount').textContent = fmt(state[key]);
-    }
-    const totalEpargne = state.coffre + state.urgence;
-    document.getElementById('stat-total').textContent = fmt(totalEpargne) + ' ₱';
-    const bossRemain = Math.max(0, GOALS.urgence - state.urgence);
-    document.getElementById('stat-boss').textContent = Math.round((bossRemain / GOALS.urgence) * 100) + '%';
-    const moisRestants = bossRemain > 0 ? Math.ceil(bossRemain / 3000) : 0;
-    document.getElementById('stat-mois').textContent = moisRestants > 0 ? '~' + moisRestants : '✅';
-    const badge = document.getElementById('level-badge');
-    if (state.urgence >= GOALS.urgence && state.coffre >= 5000) {
-      badge.textContent = '⚔ NV.3 — EN CROISSANCE';
-      badge.style.color = '#44aaff'; badge.style.borderColor = '#44aaff';
-    } else if (state.urgence >= GOALS.urgence) {
-      badge.textContent = '🛡️ NV.2 — PROTÉGÉ — BOSS VAINCU ✅';
-      badge.style.color = '#00ff88'; badge.style.borderColor = '#00ff88';
-    } else {
-      badge.textContent = '⚔ NV.1 — SURVIVANT';
-      badge.style.color = ''; badge.style.borderColor = '';
-    }
   }
 
   function showToast(msg) {
@@ -209,46 +181,35 @@
     setTimeout(() => t.classList.remove('show'), 2500);
   }
 
-  function addTo(key) {
+  function addTo(key, sign) {
     const input = document.getElementById(key + '-input');
     const val = parseFloat(input.value);
     if (!val || val <= 0) { showToast('MONTANT INVALIDE !'); return; }
-    state[key] += val;
+    const newVal = state[key].val + (sign * val);
+    if (newVal < 0) { showToast('SOLDE INSUFFISANT !'); return; }
+    state[key].val = newVal;
     input.value = '';
+    const labels = { coffre: '🔒 Coffre-fort', urgence: '🛡️ Fonds urgence' };
     const now = new Date();
     const date = now.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' });
-    const isPlus = key === 'coffre' || key === 'urgence';
-    logs.unshift({ msg: LABELS[key], amount: val, plus: isPlus, date });
-    renderLogs();
+    state.log.push({ msg: labels[key], amount: val, plus: sign > 0, date });
+    renderLog();
     updateUI();
-    saveData();
-    if (key === 'urgence' && state.urgence >= GOALS.urgence) {
+    save();
+    if (key === 'urgence' && state.urgence.val >= state.urgence.goal) {
       showToast('🏆 BOSS VAINCU ! NV.2 DÉBLOQUÉ !');
     } else {
-      showToast((isPlus ? '+' : '-') + fmt(val) + ' ₱ SAUVEGARDÉ ✅');
+      showToast((sign > 0 ? '+' : '-') + fmt(val) + ' ₱ SAUVEGARDÉ');
     }
-  }
-
-  function resetAll() {
-    if (!confirm('Réinitialiser toutes les données ? Cette action est irréversible.')) return;
-    state = { coffre: 0, urgence: 0, vie: 0, plaisir: 0 };
-    logs = [];
-    localStorage.removeItem('liferpg_state');
-    localStorage.removeItem('liferpg_logs');
-    renderLogs();
-    updateUI();
-    showToast('🔄 DONNÉES RÉINITIALISÉES');
   }
 
   document.querySelectorAll('input').forEach(inp => {
     inp.addEventListener('keydown', e => {
-      if (e.key === 'Enter') { addTo(inp.id.replace('-input', '')); }
+      if (e.key === 'Enter') { addTo(inp.id.replace('-input', ''), 1); }
     });
   });
 
-  // Init
-  loadData();
-  renderLogs();
+  load();
   updateUI();
 </script>
 </body>
